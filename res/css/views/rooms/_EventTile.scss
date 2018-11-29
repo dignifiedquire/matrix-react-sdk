@@ -35,7 +35,7 @@ limitations under the License.
 
 .mx_EventTile.mx_EventTile_info .mx_EventTile_avatar {
     top: 8px;
-    left: 65px;
+    left: 50px;
 }
 
 .mx_EventTile_continuation {
@@ -48,7 +48,7 @@ limitations under the License.
     display: block; /* anti-zalgo, with overflow hidden */
     overflow-y: hidden;
     cursor: pointer;
-    padding-left: 65px; /* left gutter */
+    padding-left: 50px; /* left gutter */
     padding-bottom: 0px;
     padding-top: 0px;
     margin: 0px;
@@ -86,8 +86,8 @@ limitations under the License.
 .mx_EventTile_line, .mx_EventTile_reply {
     position: relative;
     /* ideally should be 100px, but 95px gives us a max thumbnail size of 800x600, which is nice */
-    margin-right: 110px;
-    padding-left: 65px; /* left gutter */
+    margin-right: 20px;
+    padding-left: 50px; /* left gutter */
     padding-top: 4px;
     padding-bottom: 2px;
     border-radius: 4px;
@@ -378,7 +378,7 @@ limitations under the License.
     white-space: normal ! important;
     line-height: inherit ! important;
     color: inherit; // inherit the colour from the dark or light theme by default (but not for code blocks)
-    font-size: 14px;
+    font-size: 15px;
 }
 
 /* have to use overlay rather than auto otherwise Linux and Windows

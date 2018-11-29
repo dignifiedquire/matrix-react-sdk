@@ -638,10 +638,12 @@ module.exports = withMatrixClient(React.createClass({
                 <ToolTipButton helpText={keyRequestHelpText} />
             </div> : null;
 
+      const repliesCount = this.props.mxEvent.isThreadStart ? this.props.mxEvent.threadResponses.length : 0;
+      const replies = repliesCount > 1 ? 'replies' : 'reply'
       const threadViewer = (this.props.mxEvent.isThreadStart && this.props.mxEvent.getType() == 'm.room.message') ?
             <div className="mx_EventTile_threadLink">
               <a onClick={this.onViewThreadClicked}>
-                View Thread
+                {repliesCount} {replies} <span className="mx_EventTile_threadLink_hover">View Thread</span>
               </a>
             </div> : null;
 
@@ -737,8 +739,6 @@ module.exports = withMatrixClient(React.createClass({
                                 { timestamp }
                             </a>
                             { this._renderE2EPadlock() }
-                  { threadViewer }
-                            { /* ReplyThread.makeThread(this.props.mxEvent, this.props.onWidgetLoad, 'replyThread') */ }
                             <EventTileType ref="tile"
                                            mxEvent={this.props.mxEvent}
                                            highlights={this.props.highlights}
@@ -747,6 +747,7 @@ module.exports = withMatrixClient(React.createClass({
                                            onWidgetLoad={this.props.onWidgetLoad} />
                             { keyRequestInfo }
                             { editButton }
+                            { threadViewer }
                         </div>
                         {
                             // The avatar goes after the event tile as it's absolutly positioned to be over the

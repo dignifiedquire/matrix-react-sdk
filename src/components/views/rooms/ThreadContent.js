@@ -126,8 +126,8 @@ export default class ThreadContent extends React.Component {
 
     return (
       <div className="mx_ThreadContent">
-        <h3>Thread</h3>
-        <div>#{ this.room.name }</div>
+        <div className="mx_ThreadContent_header">Thread</div>
+        <div className="mx_ThreadContent_subheader">#{ this.room.name }</div>
         <div>{ header } </div>
         <div>{ evTiles }</div>
       </div>

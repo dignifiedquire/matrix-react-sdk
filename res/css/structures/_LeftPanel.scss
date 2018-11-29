@@ -24,13 +24,13 @@ limitations under the License.
 
 .mx_LeftPanel_container {
     display: flex;
-    /* LeftPanel 235px */
-    flex: 0 0 235px;
+    /* LeftPanel 260px */
+    flex: 0 0 260px;
 }
 
 .mx_LeftPanel_container.mx_LeftPanel_container_hasTagPanel {
-    /* TagPanel 60px + LeftPanel 235px */
-    flex: 0 0 295px;
+    /* TagPanel 60px + LeftPanel 260px */
+    flex: 0 0 320px;
 }
 
 .mx_LeftPanel_container_collapsed {

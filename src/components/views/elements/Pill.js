@@ -223,6 +223,8 @@ const Pill = React.createClass({
                     linkText = "@room";
                     if (this.props.shouldShowPillAvatar) {
                         avatar = <RoomAvatar room={room} width={16} height={16} />;
+                    } else {
+                      avatar = '@';
                     }
                     pillClass = 'mx_AtRoomPill';
                 }
@@ -237,6 +239,8 @@ const Pill = React.createClass({
                         linkText = member.rawDisplayName;
                         if (this.props.shouldShowPillAvatar) {
                             avatar = <MemberAvatar member={member} width={16} height={16} />;
+                        } else {
+                          avatar = '@';
                         }
                         pillClass = 'mx_UserPill';
                         href = null;
@@ -250,6 +254,8 @@ const Pill = React.createClass({
                     linkText = (room ? getDisplayAliasForRoom(room) : null) || resource;
                     if (this.props.shouldShowPillAvatar) {
                         avatar = <RoomAvatar room={room} width={16} height={16} />;
+                    } else {
+                      avatar = '@';
                     }
                     pillClass = 'mx_RoomPill';
                 }
@@ -264,6 +270,8 @@ const Pill = React.createClass({
                     if (this.props.shouldShowPillAvatar) {
                         avatar = <BaseAvatar name={name || groupId} width={16} height={16}
                                              url={avatarUrl ? cli.mxcUrlToHttp(avatarUrl, 16, 16) : null} />;
+                    } else {
+                      avatar = '@';
                     }
                     pillClass = 'mx_GroupPill';
                 }

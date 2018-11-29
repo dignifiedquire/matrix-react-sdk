@@ -20,11 +20,12 @@ limitations under the License.
     width: 100%;
 
     background-color: $roomsublist-background;
+    margin-bottom: 25px;
 }
 
 .mx_RoomSubList_labelContainer {
     height: 31px; /* mx_RoomSubList_label height including border */
-    width: 235px; /* LHS Panel width */
+    width: 260px; /* LHS Panel width */
     position: relative;
 }
 
@@ -32,9 +33,9 @@ limitations under the License.
     position: relative;
     text-transform: uppercase;
     color: $roomsublist-label-fg-color;
-    font-weight: 600;
+    font-weight: 400;
     font-size: 12px;
-    width: 203px; /* padding + width = LHS Panel width */
+    width: 228px; /* padding + width = LHS Panel width */
     height: 19px; /* height + padding = 31px = mx_RoomSubList_label height */
     padding-left: 16px; /* gutter */
     padding-right: 16px; /* gutter */
@@ -170,10 +171,7 @@ limitations under the License.
 }
 
 .mx_RoomSubList_line {
-    display: inline-block;
-    width: 159px;
-    border-top: dotted 2px $accent-color;
-    vertical-align: middle;
+  display: none;
 }
 
 .collapsed .mx_RoomSubList_line {
@@ -186,7 +184,7 @@ limitations under the License.
     font-size: 10px;
     font-weight: 600;
     text-align: left;
-    color: $accent-color;
+    color: $roomsublist-label-fg-color;
     padding-left: 7px;
     padding-right: 7px;
     padding-left: 7px;
@@ -205,8 +203,8 @@ limitations under the License.
     right: 8px; /*gutter */
     top: -2px;
     border-radius: 8px;
-    border: solid 1px $accent-color;
-    color: $accent-fg-color;
+    border: solid 1px $roomsublist-label-fg-color;
+    color: $roomsublist-label-fg-color;
     font-weight: 600;
     font-size: 10px;
     text-align: center;
@@ -218,7 +216,7 @@ limitations under the License.
 }
 
 .mx_RoomSubList_moreBadge.mx_RoomSubList_moreBadgeNotify {
-    background-color: $accent-color;
+    background-color: $roomsublist-label-fg-color;
     border: 0;
     padding-top: 3px;
     padding-left: 4px;
@@ -244,5 +242,3 @@ limitations under the License.
     top: 4px;
     left: 2px;
 }
-
-

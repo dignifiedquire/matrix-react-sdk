@@ -31,6 +31,20 @@ limitations under the License.
     flex: 0 0 auto;
 }
 
+.mx_ThreadContent_subheader {
+  font-size: 12px;
+  color: #717274;
+  margin-top: 5px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.mx_ThreadContent_header {
+  font-size: 18px;
+  font-weight: 900;
+  color: #2c2d30;
+}
+
 .mx_ThreadContent_chevron {
     position: absolute;
     right: 35px;
@@ -42,4 +56,42 @@ limitations under the License.
 
     order: 1;
     flex: 1 1 0px;
+}
+
+.mx_EventTile_threadLink {
+  cursor: pointer;
+  color: #717274;
+  font-size: 12px;
+  padding: 3px 10px;
+  border: 1px solid transparent;
+  transition: opacity .2s;
+  border-radius: 3px;
+  color: #717274;
+}
+
+.mx_EventTile_threadLink_hover {
+  font-weight: 400;
+  color: #717274;
+  opacity: 0;
+  transition: opacity .2s;
+  margin-left: 20px;
+}
+
+.mx_EventTile_threadLink a, .mx_EventTile_threadLink a:hover {
+  width: 100%;
+  height: 100%;
+  display: block;
+  color: $accent-color;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mx_EventTile_threadLink:hover {
+  background-color: #fff;
+  border-color: rgba(0,0,0,.15);
+}
+
+.mx_EventTile_threadLink:hover .mx_EventTile_threadLink_hover {
+  opacity: 1;
+  text-decoration: none;
 }

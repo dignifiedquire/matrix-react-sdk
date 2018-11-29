@@ -22,7 +22,6 @@
 /* More specific to override `.markdown-body a` color */
 .mx_EventTile_content .markdown-body a.mx_UserPill,
 .mx_UserPill {
-    color: $primary-fg-color;
     background-color: $other-user-pill-bg-color;
     padding-right: 5px;
 }

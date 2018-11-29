@@ -255,19 +255,10 @@ export default class MessageComposer extends React.Component {
 
     render() {
         const uploadInputStyle = {display: 'none'};
-        const MemberAvatar = sdk.getComponent('avatars.MemberAvatar');
         const TintableSvg = sdk.getComponent("elements.TintableSvg");
         const MessageComposerInput = sdk.getComponent("rooms.MessageComposerInput");
 
         const controls = [];
-
-        if (this.state.me) {
-            controls.push(
-                <div key="controls_avatar" className="mx_MessageComposer_avatar">
-                    <MemberAvatar member={this.state.me} width={24} height={24} />
-                </div>,
-            );
-        }
 
         let e2eImg; let e2eTitle; let e2eClass;
         const roomIsEncrypted = MatrixClientPeg.get().isRoomEncrypted(this.props.room.roomId);

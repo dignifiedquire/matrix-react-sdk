@@ -244,7 +244,7 @@ module.exports = React.createClass({
                                 type={Pill.TYPE_AT_ROOM_MENTION}
                                 inMessage={true}
                                 room={room}
-                                shouldShowPillAvatar={true}
+                                shouldShowPillAvatar={false}
                             />;
 
                             ReactDOM.render(pill, pillContainer);

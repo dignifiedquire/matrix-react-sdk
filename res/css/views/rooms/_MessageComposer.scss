@@ -16,7 +16,6 @@ limitations under the License.
 */
 
 .mx_MessageComposer_wrapper {
-    max-width: 960px;
     vertical-align: middle;
     margin: auto;
     border-top: 1px solid $primary-hairline-color;
@@ -77,7 +76,7 @@ limitations under the License.
 
 .mx_MessageComposer_e2eIcon {
     position: absolute;
-    left: 44px;
+    left: 5px;
 }
 
 .mx_MessageComposer_noperm_error {
@@ -95,6 +94,7 @@ limitations under the License.
     display: flex;
     flex-direction: column;
     cursor: text;
+    padding: 0 10px 0 20px;
 }
 
 .mx_MessageComposer_input {
