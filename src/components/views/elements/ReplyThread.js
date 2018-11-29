@@ -188,16 +188,17 @@ export default class ReplyThread extends React.Component {
 
         if (ev) {
             this.setState({
-                events: [ev],
-            }, this.loadNextEvent);
+              events: [ev],
+              loading: true,
+            }, this.loadEm);
         } else {
             this.setState({err: true});
         }
     }
 
-    async loadNextEvent() {
+    async loadNextEvent(ev) {
         if (this.unmounted) return;
-        const ev = this.state.events[0];
+        ev = ev || this.state.events[0];
         const inReplyToEventId = ReplyThread.getParentEventId(ev);
 
         if (!inReplyToEventId) {
@@ -230,6 +231,7 @@ export default class ReplyThread extends React.Component {
             // Return null as it is falsey and thus should be treated as an error (as the event cannot be resolved).
             return null;
         }
+
         return this.room.findEventById(eventId);
     }
 
@@ -242,15 +244,34 @@ export default class ReplyThread extends React.Component {
     }
 
     onQuoteClick() {
-        const events = [this.state.loadedEv, ...this.state.events];
-
-        this.setState({
-            loadedEv: null,
-            events,
-        }, this.loadNextEvent);
-
-        dis.dispatch({action: 'focus_composer'});
+      const events = [this.state.loadedEv, ...this.state.events];
+      this.setState({
+        loadedEv: null,
+        loading: true,
+        events,
+      }, this.loadEm);
     }
+
+  async loadEm(count) {
+    if (this.unmounted) return;
+
+    count = count || 0;
+
+    await this.loadNextEvent();
+    if (this.state.loadedEv == null || count > 100) {
+      return;
+    }
+
+    const events = [this.state.loadedEv, ...this.state.events];
+    this.setState({
+      loadedEv: null,
+      loading: true,
+      events,
+    });
+
+    // load next one
+    await this.loadEm(count);
+  }
 
     render() {
         let header = null;
@@ -281,7 +302,8 @@ export default class ReplyThread extends React.Component {
         }
 
         const EventTile = sdk.getComponent('views.rooms.EventTile');
-        const DateSeparator = sdk.getComponent('messages.DateSeparator');
+      const DateSeparator = sdk.getComponent('messages.DateSeparator');
+      console.log('rendering', this.state.events)
         const evTiles = this.state.events.map((ev) => {
             let dateSep = null;
 

@@ -25,6 +25,7 @@ import dis from "../../dispatcher";
 import sdk from '../../index';
 
 import MatrixClientPeg from '../../MatrixClientPeg';
+import ReplyThread from '../views/elements/ReplyThread';
 
 const CONTINUATION_MAX_INTERVAL = 5 * 60 * 1000; // 5 minutes
 const continuedTypes = ['m.sticker', 'm.room.message'];
@@ -93,6 +94,9 @@ module.exports = React.createClass({
 
         // show timestamps always
         alwaysShowTimestamps: PropTypes.bool,
+
+        hideThreadReplies: PropTypes.bool,
+
     },
 
     componentWillMount: function() {
@@ -253,6 +257,7 @@ module.exports = React.createClass({
 
         // Always show highlighted event
         if (this.props.highlightedEventId === mxEv.getId()) return true;
+        if (this.props.hideThreadReplies && mxEv.isReply) return false;
 
         return !shouldHideEvent(mxEv);
     },
@@ -265,6 +270,41 @@ module.exports = React.createClass({
 
         let visible = false;
         let i;
+
+      // threads :tada:
+
+      const possibleThreadIds = [];
+      const threadIds = [];
+      const threadResponses = {};
+      for (i = this.props.events.length-1; i >= 0; i--) {
+        const mxEv = this.props.events[i];
+        const id = mxEv.getId();
+
+        // this is a reply
+        const parent = ReplyThread.getParentEventId(mxEv);
+
+        if (parent) {
+          this.props.events[i].isReply = true;
+          possibleThreadIds.push(parent);
+          threadResponses[parent] = [id];
+          if (threadResponses[id]) {
+            threadResponses[parent] = [id, ...threadResponses[id]];
+          } else {
+            threadResponses[parent] = [id];
+          }
+        } else {
+          // all possible thread ids, that do not have a parent are thread starters.
+          if (possibleThreadIds.includes(id)) {
+            threadIds.push(id);
+          }
+          this.props.events[i].isReply = false;
+          this.props.events[i].isThreadStart = threadResponses[id] && threadResponses[id].length > 0;
+          this.props.events[i].threadResponses = threadResponses[id];
+        }
+      }
+
+      console.log(threadResponses);
+      console.log(possibleThreadIds, threadIds);
 
         // first figure out which is the last event in the list which we're
         // actually going to show; this allows us to behave slightly
@@ -671,3 +711,7 @@ module.exports = React.createClass({
         );
     },
 });
+
+module.exports.defaultProps = {
+  hideThreadReplies: true,
+};

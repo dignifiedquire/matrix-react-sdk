@@ -107,6 +107,7 @@ module.exports = React.createClass({
         NotificationPanel: 'NotificationPanel',
         RoomMemberInfo: 'RoomMemberInfo',
         GroupMemberInfo: 'GroupMemberInfo',
+        ThreadContent: 'ThreadContent',
     },
 
     componentWillMount: function() {
@@ -257,6 +258,13 @@ module.exports = React.createClass({
             this.setState({
                 phase: payload.phase,
             });
+        } else if (payload.action === "view_thread_content") {
+          this.setState({
+            phase: this.Phase.ThreadContent,
+            threadResponses: payload.thread_responses,
+            threadStart: payload.thread_start,
+            threadRoom: payload.thread_room,
+          });
         }
     },
 
@@ -265,6 +273,7 @@ module.exports = React.createClass({
         const MemberInfo = sdk.getComponent('rooms.MemberInfo');
         const NotificationPanel = sdk.getComponent('structures.NotificationPanel');
         const FilePanel = sdk.getComponent('structures.FilePanel');
+        const ThreadContent = sdk.getComponent('rooms.ThreadContent');
 
         const GroupMemberList = sdk.getComponent('groups.GroupMemberList');
         const GroupMemberInfo = sdk.getComponent('groups.GroupMemberInfo');
@@ -378,6 +387,12 @@ module.exports = React.createClass({
                 panel = <NotificationPanel />;
             } else if (this.state.phase === this.Phase.FilePanel) {
                 panel = <FilePanel roomId={this.props.roomId} />;
+            } else if (this.state.phase === this.Phase.ThreadContent) {
+              panel = <ThreadContent
+              threadResponses={this.state.threadResponses}
+              threadStart={this.state.threadStart}
+              threadRoom={this.state.threadRoom}
+              key={this.state.threadStart} />;
             }
         }
 

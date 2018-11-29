@@ -447,6 +447,16 @@ module.exports = withMatrixClient(React.createClass({
         });
     },
 
+    onViewThreadClicked: function(e) {
+      console.log('show me the thread!', this.props.mxEvent);
+      dis.dispatch({
+        action: 'view_thread_content',
+        thread_responses: this.props.mxEvent.threadResponses,
+        thread_start: this.props.mxEvent.getId(),
+        thread_room: this.props.mxEvent.getRoomId(),
+      })
+    },
+
     _renderE2EPadlock: function() {
         const ev = this.props.mxEvent;
         const props = {onClick: this.onCryptoClicked};
@@ -628,6 +638,13 @@ module.exports = withMatrixClient(React.createClass({
                 <ToolTipButton helpText={keyRequestHelpText} />
             </div> : null;
 
+      const threadViewer = (this.props.mxEvent.isThreadStart && this.props.mxEvent.getType() == 'm.room.message') ?
+            <div className="mx_EventTile_threadLink">
+              <a onClick={this.onViewThreadClicked}>
+                View Thread
+              </a>
+            </div> : null;
+
         switch (this.props.tileShape) {
             case 'notif': {
                 const EmojiText = sdk.getComponent('elements.EmojiText');
@@ -720,7 +737,8 @@ module.exports = withMatrixClient(React.createClass({
                                 { timestamp }
                             </a>
                             { this._renderE2EPadlock() }
-                            { ReplyThread.makeThread(this.props.mxEvent, this.props.onWidgetLoad, 'replyThread') }
+                  { threadViewer }
+                            { /* ReplyThread.makeThread(this.props.mxEvent, this.props.onWidgetLoad, 'replyThread') */ }
                             <EventTileType ref="tile"
                                            mxEvent={this.props.mxEvent}
                                            highlights={this.props.highlights}
