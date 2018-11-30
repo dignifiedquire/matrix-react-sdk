@@ -19,6 +19,7 @@ limitations under the License.
 
 import ReplyThread from "./components/views/elements/ReplyThread";
 
+import { find } from 'lodash';
 const React = require('react');
 const sanitizeHtml = require('sanitize-html');
 const highlight = require('highlight.js');
@@ -28,12 +29,9 @@ import emojione from 'emojione';
 import classNames from 'classnames';
 import MatrixClientPeg from './MatrixClientPeg';
 import url from 'url';
+import { Emoji, emojiIndex } from 'emoji-mart';
 
-emojione.imagePathSVG = 'emojione/svg/';
-// Store PNG path for displaying many flags at once (for increased performance over SVG)
-emojione.imagePathPNG = 'emojione/png/';
-// Use SVGs for emojis
-emojione.imageType = 'svg';
+emojione.ascii = true;
 
 // Anything outside the basic multilingual plane will be a surrogate pair
 const SURROGATE_PAIR_PATTERN = /([\ud800-\udbff])([\udc00-\udfff])/;
@@ -44,10 +42,12 @@ const SURROGATE_PAIR_PATTERN = /([\ud800-\udbff])([\udc00-\udfff])/;
 const SYMBOL_PATTERN = /([\u2100-\u2bff])/;
 
 // And this is emojione's complete regex
-const EMOJI_REGEX = new RegExp(emojione.unicodeRegexp+"+", "gi");
+const EMOJI_REGEX = emojione.regUnicode;
 const COLOR_REGEX = /^#[0-9a-fA-F]{6}$/;
 
 const PERMITTED_URL_SCHEMES = ['http', 'https', 'ftp', 'mailto', 'magnet'];
+const mappedUnicodeChars = emojione.mapUnicodeCharactersToShort();
+const mappedUnicode = emojione.mapUnicodeToShort();
 
 /*
  * Return true if the given string contains emoji
@@ -57,86 +57,81 @@ const PERMITTED_URL_SCHEMES = ['http', 'https', 'ftp', 'mailto', 'magnet'];
  * unicodeToImage uses this function.
  */
 export function containsEmoji(str) {
-    return SURROGATE_PAIR_PATTERN.test(str) || SYMBOL_PATTERN.test(str);
+    return SURROGATE_PAIR_PATTERN.test(str) || SYMBOL_PATTERN.test(str) || emojione.regAscii.test(str);
+}
+
+export function unicodeToShort(unicodeChar) {
+  const res = find(emojiIndex.emojis, (el) => {
+    return el.native == unicodeChar;
+  });
+
+  if (res) {
+    return res;
+  }
+
+  let short = mappedUnicodeChars[unicodeChar];
+  if (short) {
+    // tones are set differently in emoji-mart
+    short = short.replace(/_tone([0-9])/gi, (entire, match) => {
+      return `::skin-tone-${match}`;
+    });
+
+    const res = emojiIndex.search(short.replace(/:/gi, ''));
+    return res.length > 0 ? res[0] : short;
+  }
+
+  const code = mappedUnicode[unicodeChar];
+  if (code) {
+    return code;
+  }
+
+  return unicodeChar;
 }
 
 /* modified from https://github.com/Ranks/emojione/blob/master/lib/js/emojione.js
  * because we want to include emoji shortnames in title text
  */
-function unicodeToImage(str) {
-    let replaceWith; let unicode; let alt; let short; let fname;
-    const mappedUnicode = emojione.mapUnicodeToShort();
+export function unicodeToImage(str) {
+  str = str.replace(emojione.regUnicode, function(unicodeChar) {
+    if ( (typeof unicodeChar === 'undefined') || (unicodeChar === '') ) {
+      // if the unicodeChar doesnt exist just return the entire match
+      return unicodeChar;
+    }
+    const short = unicodeToShort(unicodeChar);
 
-    str = str.replace(emojione.regUnicode, function(unicodeChar) {
-        if ( (typeof unicodeChar === 'undefined') || (unicodeChar === '') || (!(unicodeChar in emojione.jsEscapeMap)) ) {
-            // if the unicodeChar doesnt exist just return the entire match
-            return unicodeChar;
-        } else {
-            // get the unicode codepoint from the actual char
-            unicode = emojione.jsEscapeMap[unicodeChar];
-
-            short = mappedUnicode[unicode];
-            fname = emojione.emojioneList[short].fname;
-
-            // depending on the settings, we'll either add the native unicode as the alt tag, otherwise the shortname
-            alt = (emojione.unicodeAlt) ? emojione.convert(unicode.toUpperCase()) : mappedUnicode[unicode];
-            const title = mappedUnicode[unicode];
-
-            replaceWith = `<img class="mx_emojione" title="${title}" alt="${alt}" src="${emojione.imagePathSVG}${fname}.svg${emojione.cacheBustParam}"/>`;
-            return replaceWith;
-        }
+    return Emoji({
+      set: 'apple',
+      html: true,
+      emoji: short,
+      size: 24,
+      fallback: (emoji, props) => {
+        return <span>{emoji ? `:${emoji.short_names[0]}:` : props.emoji}</span>;
+      },
     });
+  });
 
-    return str;
-}
-
-/**
- * Given one or more unicode characters (represented by unicode
- * character number), return an image node with the corresponding
- * emoji.
- *
- * @param alt {string} String to use for the image alt text
- * @param useSvg {boolean} Whether to use SVG image src. If False, PNG will be used.
- * @param unicode {integer} One or more integers representing unicode characters
- * @returns A img node with the corresponding emoji
- */
-export function charactersToImageNode(alt, useSvg, ...unicode) {
-    const fileName = unicode.map((u) => {
-        return u.toString(16);
-    }).join('-');
-    const path = useSvg ? emojione.imagePathSVG : emojione.imagePathPNG;
-    const fileType = useSvg ? 'svg' : 'png';
-    return <img
-        alt={alt}
-        src={`${path}${fileName}.${fileType}${emojione.cacheBustParam}`}
-    />;
-}
-
-export function processHtmlForSending(html: string): string {
-    const contentDiv = document.createElement('div');
-    contentDiv.innerHTML = html;
-
-    if (contentDiv.children.length === 0) {
-        return contentDiv.innerHTML;
+  str = str.replace(emojione.regAscii, (entire, m1, m2, m3) => {
+    if( (typeof m3 === 'undefined') || (m3 === '') || (!(emojione.unescapeHTML(m3) in emojione.asciiList)) ) {
+      // if the ascii doesnt exist just return the entire match
+      return entire;
     }
 
-    let contentHTML = "";
-    for (let i=0; i < contentDiv.children.length; i++) {
-        const element = contentDiv.children[i];
-        if (element.tagName.toLowerCase() === 'p') {
-            contentHTML += element.innerHTML;
-            // Don't add a <br /> for the last <p>
-            if (i !== contentDiv.children.length - 1) {
-                contentHTML += '<br />';
-            }
-        } else {
-            const temp = document.createElement('div');
-            temp.appendChild(element.cloneNode(true));
-            contentHTML += temp.innerHTML;
-        }
-    }
+    m3 = emojione.unescapeHTML(m3);
+    const unicode = emojione.asciiList[m3];
+    const short = unicodeToShort(unicode);
 
-    return contentHTML;
+    return Emoji({
+      set: 'apple',
+      html: true,
+      emoji: short || entire,
+      size: 24,
+      fallback: (emoji, props) => {
+        return <span>{emoji ? `:${emoji.short_names[0]}:` : props.emoji}</span>;
+      },
+    })
+  });
+
+  return str;
 }
 
 /*

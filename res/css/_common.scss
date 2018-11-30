@@ -294,9 +294,20 @@ textarea {
     background-color: $primary-bg-color;
 }
 
-.mx_emojione {
-    height: 1em;
-    vertical-align: middle;
+.emoji-mart-emoji {
+  line-height: 16px;
+  vertical-align: top;
+  display: inline-block;
+}
+
+
+.mx_emoji_selected .emoji-mart-emoji {
+  background-color: $accent-color;
+}
+
+.mx_MessageComposer_input .emoji-mart-emoji {
+  vertical-align: middle;
+  line-height: 19px;
 }
 
 .mx_emojione_selected {
@@ -314,7 +325,7 @@ textarea {
 }
 
 .mx_textButton {
-    @mixin mx_DialogButton_small;    
+    @mixin mx_DialogButton_small;
 }
 
 .mx_textButton:hover {

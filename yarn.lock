@@ -2245,10 +2245,15 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-emojione@2.2.7:
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/emojione/-/emojione-2.2.7.tgz#46457cf6b9b2f8da13ae8a2e4e547de06ee15e96"
-  integrity sha1-RkV89rmy+NoTroouTlR94G7hXpY=
+emoji-mart@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-2.9.1.tgz#7796bb8a3eed2238763faaa5236f6b817aff565e"
+  integrity sha512-bPBMe0lFuEukCNYqlA1KlZmdmVl5bMI+67F0R4FBYRe7utTOeADYleZpGyKGiipjja1GLU3bdVPcwzsbcPaeMw==
+
+emojione@^4:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/emojione/-/emojione-4.0.0.tgz#bbe117a1d24d18d3a62b18ef6d42725a59ded258"
+  integrity sha512-ATFSRHrK838NoTUE96j9rpmS1R4a/qpK1maQURGdFtarpWloEttjjIBBWbSFqsUxC0Vot6P2WXmSlotvZoegxw==
 
 emojis-list@^2.0.0:
   version "2.1.0"

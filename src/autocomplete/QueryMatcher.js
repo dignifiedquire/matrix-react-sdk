@@ -85,6 +85,7 @@ export default class QueryMatcher {
         if (this._options.shouldMatchWordsOnly) {
             query = query.replace(/[^\w]/g, '');
         }
+
         if (query.length === 0) {
             return [];
         }
@@ -92,12 +93,13 @@ export default class QueryMatcher {
         // Iterate through the map & check each key.
         // ES6 Map iteration order is defined to be insertion order, so results
         // here will come out in the order they were put in.
-        for (const key of this._items.keys()) {
+      for (const key of this._items.keys()) {
             let resultKey = key;
             if (this._options.shouldMatchWordsOnly) {
                 resultKey = resultKey.replace(/[^\w]/g, '');
             }
             const index = resultKey.indexOf(query);
+
             if (index !== -1 && (!this._options.shouldMatchPrefix || index === 0)) {
                 results.push({key, index});
             }

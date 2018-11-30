@@ -61,8 +61,7 @@ import ReplyPreview from "./ReplyPreview";
 import RoomViewStore from '../../../stores/RoomViewStore';
 import ReplyThread from "../elements/ReplyThread";
 import {ContentHelpers} from 'matrix-js-sdk';
-
-const EMOJI_SHORTNAMES = Object.keys(emojioneList);
+import { Emoji } from 'emoji-mart';
 const EMOJI_UNICODE_TO_SHORTNAME = mapUnicodeToShort();
 const REGEX_EMOJI_WHITESPACE = new RegExp('(?:^|\\s)(' + asciiRegexp + ')\\s$');
 const EMOJI_REGEX = new RegExp(unicodeRegexp, 'g');
@@ -1476,15 +1475,21 @@ export default class MessageComposerInput extends React.Component {
             }
             case 'emoji': {
                 const { data } = node;
-                const emojiUnicode = data.get('emojiUnicode');
-                const uri = RichText.unicodeToEmojiUri(emojiUnicode);
-                const shortname = toShort(emojiUnicode);
                 const className = classNames('mx_emojione', {
-                    mx_emojione_selected: isSelected,
+                    mx_emoji_selected: isSelected,
                 });
-                const style = {};
-                if (props.selected) style.border = '1px solid blue';
-                return <img className={ className } src={ uri } title={ shortname } alt={ emojiUnicode } style={style} />;
+                return (
+                    <span className={className}>
+                      <Emoji
+                        set={'apple'}
+                        emoji={HtmlUtils.unicodeToShort(data.get('emojiUnicode'))}
+                        size={24}
+                        fallback={(emoji, props) => {
+                          return <span>{emoji ? `:${emoji.short_names[0]}:` : props.emoji}</span>
+                        }}
+                        />
+                    </span>
+                );
             }
         }
     };
